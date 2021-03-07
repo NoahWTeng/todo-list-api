@@ -1,0 +1,20 @@
+#db
+mongodb:
+  hosts: localhost:27017
+  db_name: todo
+  username:
+  password:
+  timeout: 10
+  dial_timeout: 10
+  pool_size: 10
+  auth_source:
+  replica_set:
+  uri:
+  newrelic_tracer: true
+  id_prefix:
+
+#base
+#environment | release | development
+base:
+  port: 8100
+  environment: development
