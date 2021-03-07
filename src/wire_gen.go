@@ -21,13 +21,17 @@ func CreateNewApp() (*Container, error) {
 	handler := injectors.MongodbProvider(globalConfig)
 	services := injectors.UsersServicesProvider(handler)
 	controllers := injectors.UsersControllersProvider(services)
+	tasksServices := injectors.TasksServicesProvider(handler)
+	tasksControllers := injectors.TasksControllersProvider(tasksServices)
 	container := &Container{
 		config:           globalConfig,
 		httpServer:       server,
 		router:           mux,
 		mongodb:          handler,
-		usersService:     services,
+		usersServices:    services,
 		usersControllers: controllers,
+		tasksServices:    tasksServices,
+		tasksControllers: tasksControllers,
 	}
 	return container, nil
 }

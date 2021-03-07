@@ -16,7 +16,14 @@ func (c *Container) routes() {
 			r.Post("/", c.usersControllers.Create)
 			r.Put("/{id}", c.usersControllers.UpdateOne)
 			r.Delete("/{id}", c.usersControllers.DeleteOne)
+		})
 
+		r.Route("/tasks", func(r chi.Router) {
+			r.With(mdw.Pagination).Get("/", c.tasksControllers.Search)
+			r.Get("/{id}", c.tasksControllers.GetById)
+			r.Post("/", c.tasksControllers.Create)
+			r.Put("/{id}", c.tasksControllers.UpdateOne)
+			r.Delete("/{id}", c.tasksControllers.DeleteOne)
 		})
 
 	})

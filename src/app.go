@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"github.com/NoahWTeng/todo-api-go/config"
+	"github.com/NoahWTeng/todo-api-go/src/app/tasks"
 	"github.com/NoahWTeng/todo-api-go/src/app/users"
 	"github.com/NoahWTeng/todo-api-go/src/infra/db/mongodb"
 	"github.com/go-chi/chi"
@@ -20,8 +21,11 @@ type Container struct {
 	mongodb    *mongodb.Handler
 
 	// APP
-	usersService     users.Services
+	usersServices     users.Services
 	usersControllers users.Controllers
+
+	tasksServices tasks.Services
+	tasksControllers tasks.Controllers
 }
 
 type Application interface {

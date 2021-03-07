@@ -15,6 +15,8 @@ func CreateNewApp() (*Container, error) {
 		injectors.MongodbProvider,
 		injectors.UsersServicesProvider,
 		injectors.UsersControllersProvider,
+		injectors.TasksControllersProvider,
+		injectors.TasksServicesProvider,
 		wire.Struct(new(Container), "*"),
 	))
 }

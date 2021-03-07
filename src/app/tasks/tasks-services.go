@@ -1,4 +1,4 @@
-package users
+package tasks
 
 import (
 	"context"
@@ -10,49 +10,8 @@ import (
 	"time"
 )
 
-func (s *Database) Create(ctx context.Context, user *Model) (*Model, error) {
-	collection := s.Methods.DB(ctx).Collection(s.Collection)
-
-	if err := user.CreateValidation(); err != nil {
-		return &Model{}, err
-	}
-
-	passwordHashing(&user.Password)
-
-	result, err := collection.InsertOne(ctx, user)
-
-	if err != nil {
-		return &Model{}, err
-	}
-	user.RawID = result.InsertedID.(primitive.ObjectID)
-	return user, nil
-}
-
-func (s *Database) FindOne(ctx context.Context, id string,email string) (*Model, error){
-	collection := s.Methods.DB(ctx).Collection(s.Collection)
-	var result Model
-
-	if id != "" {
-		ObjectId, _ := primitive.ObjectIDFromHex(id)
-		err := collection.FindOne(ctx, bson.D{{"_id",ObjectId }}).Decode(&result)
-
-		if err != nil {
-			return &Model{}, err
-		}
-	}
-
-	if email != ""{
-		err := collection.FindOne(ctx, bson.D{{"email", email}}).Decode(&result)
-		if err != nil {
-			return &Model{}, err
-		}
-	}
-
-	return &result, nil
-}
-
 func (s *Database) FindAll(ctx context.Context) *pagination.Pages {
-	collection := s.Methods.DB(ctx).Collection(s.Collection)
+	collection := s.Methods.DB(ctx).Collection("tasks")
 
 	var results []*Model
 
@@ -90,31 +49,61 @@ func (s *Database) FindAll(ctx context.Context) *pagination.Pages {
 	return withPagination
 }
 
-func (s *Database) Update(ctx context.Context,user *Model, id string) (*Model, error) {
+func (s *Database) Create(ctx context.Context, task *Model) (*Model, error) {
 	collection := s.Methods.DB(ctx).Collection(s.Collection)
 
-	if err := user.UpdateValidation(); err != nil {
+	if err := task.Validation(); err != nil {
 		return &Model{}, err
 	}
 
- 	var model Model
+	result, err := collection.InsertOne(ctx, task)
+
+	if err != nil {
+		return &Model{}, err
+	}
+	task.RawID = result.InsertedID.(primitive.ObjectID)
+	return task, nil
+}
+
+func (s *Database) FindOne(ctx context.Context, id string) (*Model, error) {
+	collection := s.Methods.DB(ctx).Collection(s.Collection)
+	var result Model
+
+	ObjectId, _ := primitive.ObjectIDFromHex(id)
+	err := collection.FindOne(ctx, bson.D{{"_id", ObjectId}}).Decode(&result)
+
+	if err != nil {
+		return &Model{}, err
+	}
+
+	return &result, nil
+}
+
+
+func (s *Database) Update(ctx context.Context,task *Model, id string) (*Model, error) {
+	collection := s.Methods.DB(ctx).Collection(s.Collection)
+
+	if err := task.Validation(); err != nil {
+		return &Model{}, err
+	}
+
+	var model Model
 	ObjectId, _ := primitive.ObjectIDFromHex(id)
 
 	_ = collection.FindOne(ctx, bson.D{{"_id",ObjectId }}).Decode(&model)
 
 	model.UpdatedAt = time.Now()
 
-	if user.Name != "" {
-		model.Name = user.Name
+	if task.Title != "" {
+		model.Title = task.Title
 	}
 
-	if user.Email != "" {
-		model.Email = user.Email
+	if task.Status != "" {
+		model.Status = task.Status
 	}
 
-	if user.Password != ""{
-		passwordHashing(&user.Password)
-		model.Password = user.Password
+	if task.Comment != ""{
+		model.Comment = task.Comment
 	}
 
 	_, err := collection.UpdateOne(ctx, bson.M{"_id": ObjectId}, bson.D{{"$set", &model}})
@@ -137,3 +126,4 @@ func (s *Database) Delete(ctx context.Context, id string) (int64, error) {
 
 	return result.DeletedCount, nil
 }
+

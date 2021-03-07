@@ -100,7 +100,7 @@ func (repo *Repository) DeleteOne(writer http.ResponseWriter, request *http.Requ
 		Deleted bool `json:"deleted"`
 	}
 
-	_ , err:= repo.UsersServices.Delete(request.Context(), id)
+	result , err:= repo.UsersServices.Delete(request.Context(), id)
 
 	if err != nil {
 		err := errors.BadRequest(err.Error())
@@ -108,7 +108,10 @@ func (repo *Repository) DeleteOne(writer http.ResponseWriter, request *http.Requ
 		return
 	}
 
+	if result == 0 {
+		response.Json(writer, request, http.StatusOK, Deleted{ID: id, Deleted: false})
+		return
+	}
 
 	response.Json(writer, request, http.StatusOK, Deleted{ID: id, Deleted: true})
-
 }
