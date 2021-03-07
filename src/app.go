@@ -21,10 +21,10 @@ type Container struct {
 	mongodb    *mongodb.Handler
 
 	// APP
-	usersServices     users.Services
+	usersServices    users.Services
 	usersControllers users.Controllers
 
-	tasksServices tasks.Services
+	tasksServices    tasks.Services
 	tasksControllers tasks.Controllers
 }
 

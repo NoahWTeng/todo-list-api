@@ -79,8 +79,7 @@ func (s *Database) FindOne(ctx context.Context, id string) (*Model, error) {
 	return &result, nil
 }
 
-
-func (s *Database) Update(ctx context.Context,task *Model, id string) (*Model, error) {
+func (s *Database) Update(ctx context.Context, task *Model, id string) (*Model, error) {
 	collection := s.Methods.DB(ctx).Collection(s.Collection)
 
 	if err := task.Validation(); err != nil {
@@ -90,7 +89,7 @@ func (s *Database) Update(ctx context.Context,task *Model, id string) (*Model, e
 	var model Model
 	ObjectId, _ := primitive.ObjectIDFromHex(id)
 
-	_ = collection.FindOne(ctx, bson.D{{"_id",ObjectId }}).Decode(&model)
+	_ = collection.FindOne(ctx, bson.D{{"_id", ObjectId}}).Decode(&model)
 
 	model.UpdatedAt = time.Now()
 
@@ -102,7 +101,7 @@ func (s *Database) Update(ctx context.Context,task *Model, id string) (*Model, e
 		model.Status = task.Status
 	}
 
-	if task.Comment != ""{
+	if task.Comment != "" {
 		model.Comment = task.Comment
 	}
 
@@ -118,7 +117,7 @@ func (s *Database) Update(ctx context.Context,task *Model, id string) (*Model, e
 func (s *Database) Delete(ctx context.Context, id string) (int64, error) {
 	collection := s.Methods.DB(ctx).Collection(s.Collection)
 	ObjectId, _ := primitive.ObjectIDFromHex(id)
-	result, err := collection.DeleteOne(ctx, bson.D{{"_id",ObjectId }})
+	result, err := collection.DeleteOne(ctx, bson.D{{"_id", ObjectId}})
 
 	if err != nil {
 		return 0, err
@@ -126,4 +125,3 @@ func (s *Database) Delete(ctx context.Context, id string) (int64, error) {
 
 	return result.DeletedCount, nil
 }
-

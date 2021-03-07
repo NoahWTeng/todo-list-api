@@ -9,14 +9,14 @@ import (
 	"time"
 )
 
-func (repo *Repository) Search(writer http.ResponseWriter, request *http.Request)  {
+func (repo *Repository) Search(writer http.ResponseWriter, request *http.Request) {
 
 	results := repo.TasksRepository.FindAll(request.Context())
 
 	response.Json(writer, request, http.StatusOK, results)
 }
 
-func (repo *Repository) Create(writer http.ResponseWriter, request *http.Request)  {
+func (repo *Repository) Create(writer http.ResponseWriter, request *http.Request) {
 	var task Model
 
 	_ = json.NewDecoder(request.Body).Decode(&task)
@@ -24,9 +24,9 @@ func (repo *Repository) Create(writer http.ResponseWriter, request *http.Request
 	newTask := Model{
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-		Title:      task.Title,
-		Status:     task.Status,
-		Comment:  task.Comment,
+		Title:     task.Title,
+		Status:    task.Status,
+		Comment:   task.Comment,
 	}
 
 	if newTask.Status == "" {
@@ -38,59 +38,59 @@ func (repo *Repository) Create(writer http.ResponseWriter, request *http.Request
 	if err != nil {
 		err := errors.BadRequest(err.Error())
 
-		response.Error(writer, request,err.Status,  err.Message)
+		response.Error(writer, request, err.Status, err.Message)
 		return
 	}
 
 	response.Json(writer, request, http.StatusCreated, result)
 }
 
-func (repo *Repository) GetById(writer http.ResponseWriter, request *http.Request)  {
+func (repo *Repository) GetById(writer http.ResponseWriter, request *http.Request) {
 	id := chi.URLParam(request, "id")
 
 	result, err := repo.TasksRepository.FindOne(request.Context(), id)
 
 	if err != nil {
 		err := errors.BadRequest(err.Error())
-		response.Error(writer, request,err.Status,  err.Message)
+		response.Error(writer, request, err.Status, err.Message)
 		return
 	}
 
 	response.Json(writer, request, http.StatusOK, result)
 }
 
-func (repo *Repository) UpdateOne(writer http.ResponseWriter, request *http.Request)  {
+func (repo *Repository) UpdateOne(writer http.ResponseWriter, request *http.Request) {
 	id := chi.URLParam(request, "id")
 	var task Model
 
 	_ = json.NewDecoder(request.Body).Decode(&task)
 
-	result , err:= repo.TasksRepository.Update(request.Context(),&task, id)
+	result, err := repo.TasksRepository.Update(request.Context(), &task, id)
 
 	if err != nil {
 		err := errors.BadRequest(err.Error())
 
-		response.Error(writer, request,err.Status,  err.Message)
+		response.Error(writer, request, err.Status, err.Message)
 		return
 	}
 
 	response.Json(writer, request, http.StatusOK, result)
 }
 
-func (repo *Repository) DeleteOne(writer http.ResponseWriter, request *http.Request)  {
+func (repo *Repository) DeleteOne(writer http.ResponseWriter, request *http.Request) {
 
 	id := chi.URLParam(request, "id")
 
 	type Deleted struct {
-		ID  string `json:"id"`
-		Deleted bool `json:"deleted"`
+		ID      string `json:"id"`
+		Deleted bool   `json:"deleted"`
 	}
 
-	result , err:= repo.TasksRepository.Delete(request.Context(), id)
+	result, err := repo.TasksRepository.Delete(request.Context(), id)
 
 	if err != nil {
 		err := errors.BadRequest(err.Error())
-		response.Error(writer, request,err.Status,  err.Message)
+		response.Error(writer, request, err.Status, err.Message)
 		return
 	}
 

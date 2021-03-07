@@ -6,7 +6,7 @@ import (
 )
 
 func TasksControllersProvider(repo tasks.Services) tasks.Controllers {
-	return &tasks.Repository{ TasksRepository: repo}
+	return &tasks.Repository{TasksRepository: repo}
 }
 
 func TasksServicesProvider(mongodb *mongodb.Handler) tasks.Services {

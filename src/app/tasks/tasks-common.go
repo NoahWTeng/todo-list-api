@@ -30,7 +30,7 @@ type Repository struct {
 type Services interface {
 	FindAll(ctx context.Context) *pagination.Pages
 	Create(ctx context.Context, task *Model) (*Model, error)
-	FindOne(ctx context.Context, id string) (*Model,error)
+	FindOne(ctx context.Context, id string) (*Model, error)
 	Update(ctx context.Context, task *Model, id string) (*Model, error)
 	Delete(ctx context.Context, id string) (int64, error)
 }

@@ -15,3 +15,16 @@ func passwordHashing(password *string) {
 
 	*password = string(hash)
 }
+
+func comparePasswords(hashedPwd string, password string) bool {
+	byteHash := []byte(hashedPwd)
+	plainPwd := []byte(password)
+
+	err := bcrypt.CompareHashAndPassword(byteHash, plainPwd)
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+
+	return true
+}

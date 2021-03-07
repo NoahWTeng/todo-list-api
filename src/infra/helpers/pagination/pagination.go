@@ -8,10 +8,7 @@ import (
 var (
 	limit = 10
 	page  = 1
-
 )
-
-
 
 // Pages represents a paginated list of data items.
 type Pages struct {

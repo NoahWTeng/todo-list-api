@@ -11,4 +11,3 @@ func (task Model) Validation() error {
 		validation.Field(&task.Comment),
 	)
 }
-

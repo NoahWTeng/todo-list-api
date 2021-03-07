@@ -20,3 +20,10 @@ func (user Model) UpdateValidation() error {
 		validation.Field(&user.Password, validation.Length(6, 25)),
 	)
 }
+
+func (login Login) LoginValidation() error {
+	return validation.ValidateStruct(&login,
+		validation.Field(&login.Email, validation.Required, is.Email),
+		validation.Field(&login.Password, validation.Required),
+	)
+}

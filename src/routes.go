@@ -14,6 +14,7 @@ func (c *Container) routes() {
 			r.With(mdw.Pagination).Get("/", c.usersControllers.Search)
 			r.Get("/{id}", c.usersControllers.GetById)
 			r.Post("/", c.usersControllers.Create)
+			r.Post("/login", c.usersControllers.Login)
 			r.Put("/{id}", c.usersControllers.UpdateOne)
 			r.Delete("/{id}", c.usersControllers.DeleteOne)
 		})
