@@ -1,22 +1,39 @@
 package mdw
 
 import (
-	"fmt"
+	"context"
+	"github.com/NoahWTeng/todo-api-go/src/app/users"
+	"github.com/NoahWTeng/todo-api-go/src/infra/helpers/errors"
+	"github.com/NoahWTeng/todo-api-go/src/infra/helpers/response"
+	"github.com/dgrijalva/jwt-go"
 	"net/http"
+	"strings"
 )
+
+//type Claims struct {
+//	Name  string `json:"name"`
+//	Email string `json:"email"`
+//	jwt.StandardClaims
+//}
 
 func Authorization(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// create new context from `r` request context, and assign key `"user"`
-		// to value of `"123"`
-		fmt.Println(r.Header.Get("Authorization"))
 
-		// call the next handler in the chain, passing the response writer and
-		// the updated request object with the new context value.
-		//
-		// note: context.Context values are nested, so any previously set
-		// values will be accessible as well, and the new `"user"` key
-		// will be accessible from this point forward.
-		//next.ServeHTTP(w, r.WithContext(ctx))
+		jwtKey := users.JwtKey
+		token := r.Header.Get("Authorization")
+		removeBearer := strings.ReplaceAll(token, "Bearer ", "")
+
+		tkn, _ := jwt.ParseWithClaims(removeBearer, &users.Claims{}, func(token *jwt.Token) (interface{}, error) {
+			return jwtKey, nil
+		})
+
+		if claims, ok := tkn.Claims.(*users.Claims); ok && tkn.Valid {
+			ctx := context.WithValue(r.Context(), "user", claims)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		} else {
+			err := errors.Unauthorized("")
+			response.Error(w, r, err.Status, err.Message)
+		}
+
 	})
 }

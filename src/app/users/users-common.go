@@ -31,7 +31,7 @@ type Claims struct {
 }
 
 // Create the JWT key used to create the signature
-var jwtKey = []byte("my_secret_key")
+var JwtKey = []byte("my_secret_key")
 
 type Database struct {
 	*mongodb.Handler

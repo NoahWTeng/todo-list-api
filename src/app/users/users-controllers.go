@@ -13,6 +13,10 @@ import (
 
 func (repo *Repository) Search(writer http.ResponseWriter, request *http.Request) {
 
+	ctx := request.Context()
+	user := ctx.Value("user").(*Claims)
+
+	fmt.Println(user)
 	results := repo.UsersServices.FindAll(request.Context())
 
 	response.Json(writer, request, http.StatusOK, results)

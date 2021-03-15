@@ -162,7 +162,7 @@ func (s *Database) SignIn(ctx context.Context, login *Login) (string, error) {
 	// Declare the expiration time of the token
 	// here, we have kept it as 60 minutes
 	expirationTime := time.Now().Add(60 * time.Minute)
-	claims := Claims{
+	claims := &Claims{
 		Name:  user.Name,
 		Email: user.Email,
 		StandardClaims: jwt.StandardClaims{
@@ -173,7 +173,7 @@ func (s *Database) SignIn(ctx context.Context, login *Login) (string, error) {
 	// Declare the token with the algorithm used for signing, and the claims
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	// Create the JWT string
-	tokenString, errToken := token.SignedString(jwtKey)
+	tokenString, errToken := token.SignedString(JwtKey)
 	if errToken != nil {
 		// If there is an error in creating the JWT return an internal server error
 		return "", errors.New("Error generate JWT key!")

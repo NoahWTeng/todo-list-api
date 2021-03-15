@@ -9,12 +9,12 @@ func (c *Container) routes() {
 	routes := c.router
 
 	routes.Route("/api/v1", func(r chi.Router) {
-
+		r.Post("/users/login", c.usersControllers.Login)
 		r.Route("/users", func(r chi.Router) {
+			r.Use(mdw.Authorization)
 			r.With(mdw.Pagination).Get("/", c.usersControllers.Search)
 			r.Get("/{id}", c.usersControllers.GetById)
 			r.Post("/", c.usersControllers.Create)
-			r.Post("/login", c.usersControllers.Login)
 			r.Put("/{id}", c.usersControllers.UpdateOne)
 			r.Delete("/{id}", c.usersControllers.DeleteOne)
 		})
